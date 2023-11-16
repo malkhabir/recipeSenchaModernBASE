@@ -2,6 +2,7 @@ Ext.define('FrontEnd.view.main.GridIngredient', {
     extend: 'Ext.grid.Grid',
     xtype: 'gridingredient',
     controller: 'gridingredientcontroller',
+    id: 'gridingredientid',
 
 
     items: [{
