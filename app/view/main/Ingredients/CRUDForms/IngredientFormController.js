@@ -66,7 +66,7 @@ Ext.define('FrontEnd.controller.IngredientFormController', {
                 try {
                     debugger
                     const data = Ext.decode(response.responseText);
-                    const matchingIngredientUrls = data.map(imageSrc => ({ imageSrc }));
+                    const matchingIngredientUrls = data.map(imageSrc => ({ imageSrc , value: imageSrc }));
                     console.log(matchingIngredientUrls);
                     
                     if (this.picker) {
@@ -78,15 +78,37 @@ Ext.define('FrontEnd.controller.IngredientFormController', {
                         this.picker = Ext.Viewport.add({
                             xtype: 'picker',
                             slots: [{
-                                name: "Available Icons",
+                                name: "ingredientImage",
                                 title: 'Ingredients',
                                 itemTpl: '<img src="{imageSrc}" width="40" height="40">',
-                                data: matchingIngredientUrls
+                                itemConfig: {
+                                    ui: 'round', // Optional UI config
+                                    getItemTpl: function (record, index) {
+                                        // Use a function to dynamically adjust the itemTpl based on the record properties
+                                        var selectedCls = record.get('selected') ? 'selected-slot' : '';
+                                        var width = record.get('selected') ? 60 : 40; // Adjust width as needed
+                                        var height = record.get('selected') ? 60 : 40; // Adjust height as needed
+                        
+                                        return {
+                                            selectedCls: selectedCls,
+                                            width: width,
+                                            height: height,
+                                            imageSrc: record.get('imageSrc')
+                                        };
+                                    }
+                                },
+                                data: matchingIngredientUrls,
+                                itemCls: 'selected-slot' // Add a CSS class for the selected slot
                             }],
                             listeners: {
                                 show: function () {
                                     // Set a high zIndex to ensure the picker is on top (Needed mobile devices)
                                     this.setZIndex(9999);
+                                },
+                                pick: function(picker, values, slot, eOpts) {
+                                    // debugger;
+                                    Ext.getCmp('editingredientform').lookupReference('ingredientImage').setSrc(values['ingredientImage'])
+                                    
                                 }
                             }
                         });

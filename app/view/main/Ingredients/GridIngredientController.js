@@ -32,53 +32,21 @@ Ext.define('FrontEnd.view.main.GridIngredientController', {
             var form = this.getView().add({
                 xtype: 'formwindow',
                 title: 'Edit Ingredient',
-                height: 700,
+                height: 600,
                 items: [{
-                    xtype: 'updateingredientform',
-                    items: [{
-                        xtype: 'container',
-                        layout: 'vbox',
-                        items: [{
-                            xtype: 'container',
-                            layout: 'center',
-                            padding: '30 0 20 0',
-                            items: [{
-                                xtype: 'image',
-                                reference: 'ingredientImage',
-                                width: 200,
-                                height: 200,
-                                src: imageUrl,
-                                listeners: {
-                                    tap: 'onImageTap'
-                                }
-                            }]
-                        }, {
-                            xtype: 'textfield', // Replace with your field type
-                            label: 'Name',
-                            name: 'name',
-                            allowBlank: false
-                        }, {
-                            xtype: 'textfield', // Replace with your field type
-                            label: 'Unit',
-                            name: 'measurementUnit',
-                            allowBlank: false
-                        }, {
-                            xtype: 'hiddenfield',
-                            name: 'ingredientId',
-                            allowBlank: false,
-                            hidden: true
-                        }, {
-                            xtype: 'numberfield', // Replace with your field type
-                            label: 'Calories',
-                            name: 'calories',
-                            allowBlank: false
-                        }]
-                    }]
+                    xtype: 'editingredientform'
                 }],
             });
             
             
-            var ingredientForm = form.down('updateingredientform');
+            var ingredientForm = form.down('editingredientform');
+
+            // Update the image source in the edit ingredient form
+            var imageComponent = ingredientForm.down('image');
+            if (imageComponent) {
+                imageComponent.setSrc(imageUrl);
+            }
+
             ingredientForm.setValues(record.data);
             form.show();
         } else {
