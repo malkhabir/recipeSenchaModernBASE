@@ -4,10 +4,11 @@ Ext.define('FrontEnd.view.main.GridIngredientController', {
     alias: 'controller.gridingredientcontroller',
 
     AddIngredient: function (sender) {
+
         var form = this.getView().add({
             xtype: 'formwindow',
             title: 'Add Ingredient',
-            height: 400,
+            height: 600,
             items: [{
                 xtype: 'createingredientform',
                 viewModel: {
@@ -22,7 +23,6 @@ Ext.define('FrontEnd.view.main.GridIngredientController', {
     },
 
     EditIngredient: function(sender){
-        debugger
         var record = this.getView().getSelection();
 
         if(record !== null){
