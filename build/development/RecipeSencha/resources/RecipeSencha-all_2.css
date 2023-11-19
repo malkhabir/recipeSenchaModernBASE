@@ -8720,6 +8720,39 @@ body {
     /* Add your styles here */
     /* Add your styles here */
     font-size: 14px;
-    color: red;
+    color: #000;
     text-align: center;
+}
+/* C:/Users/Khabir/source/repos/recipeSenchaModernBASE/app/view/main/Home/HomeRecipeDataview.scss:13 */
+.img-container {
+    width: 100px;
+    height: 150px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+/* C:/Users/Khabir/source/repos/recipeSenchaModernBASE/app/view/main/Home/HomeRecipeDataview.scss:23 */
+.ingredient-img-style {
+    width: 100%;
+    height: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+/* C:/Users/Khabir/source/repos/recipeSenchaModernBASE/app/view/main/Home/RecipeView.scss:2 */
+.demo-solid-background {
+    /* Replace these with your actual style definitions */
+    background-color: #f0f0f0;
+}
+/* C:/Users/Khabir/source/repos/recipeSenchaModernBASE/app/view/main/Home/RecipeView.scss:6 */
+.card {
+    background-color: #fff;
+    color: #333;
+}
+/* C:/Users/Khabir/source/repos/recipeSenchaModernBASE/app/view/main/Home/RecipeView.scss:11 */
+.card.dark {
+    background-color: #333;
+    color: #fff;
 }

@@ -5,7 +5,26 @@
 .ingredient-name-style {
     /* Add your styles here */
     font-size: 14px;
-    color: #ff0000;
+    color: #00000060;
     text-align: center;
     /* Add any other styles as needed */
+}
+
+.img-container {
+    width: 100px;
+    height: 150px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ingredient-img-style {
+    width: 100%;
+    height: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center; /* Center the background image */
+
 }

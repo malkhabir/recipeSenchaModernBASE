@@ -884,7 +884,9 @@ $include-frontend-view-editingredientform: dynamic(true);;
 $include-frontend-view-formwindow: dynamic(true);;
 $include-frontend-view-main-gridingredient: dynamic(true);;
 $include-frontend-view-main-gridingredientcontroller: dynamic(true);;
+$include-frontend-view-main-home-recipeview: dynamic(true);;
 $include-frontend-view-main-homerecipedataview: dynamic(true);;
+$include-frontend-view-main-kitchenhub-kitchenhub: dynamic(true);;
 $include-frontend-view-main-main: dynamic(true);;
 $include-frontend-view-main-maincontroller: dynamic(true);;
 $include-frontend-view-main-mainmodel: dynamic(true);;
@@ -1466,3 +1468,11 @@ $current-package: false;
 $current-resource-root: $default-resource-root;
 $relative-image-path-for-uis: $default-resource-path;
 @import '../../../../../app/view/main/Home/HomeRecipeDataview';
+
+/* including scss file adjacent to ..\..\..\..\..\app\view\main\Home\RecipeView.js */
+$default-resource-root: '' !default;
+$default-resource-path: 'images' !default;
+$current-package: false;
+$current-resource-root: $default-resource-root;
+$relative-image-path-for-uis: $default-resource-path;
+@import '../../../../../app/view/main/Home/RecipeView';
