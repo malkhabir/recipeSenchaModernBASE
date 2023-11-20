@@ -1,5 +1,5 @@
 $app-name:  dynamic( 'RecipeSencha' );
-$image-search-path: 'C:/Users/Khabir/source/repos/recipeSenchaModernBASE/build/development/RecipeSencha/resources';
+$image-search-path: '/Users/mahamadkanoute/Desktop/recipeSenchaModernBASE/build/development/RecipeSencha/resources';
 $theme-name:  dynamic( 'theme-material' );
 $include-ext-abstractcomponent: dynamic(true);;
 $include-ext-abstractmanager: dynamic(true);;
@@ -891,6 +891,8 @@ $include-frontend-view-main-main: dynamic(true);;
 $include-frontend-view-main-maincontroller: dynamic(true);;
 $include-frontend-view-main-mainmodel: dynamic(true);;
 $include-frontend-view-main-managementgrids: dynamic(true);;
+$include-frontend-view-main-recipes-gridrecipes: dynamic(true);;
+$include-frontend-view-main-recipies-gridrecipes: dynamic(true);;
 $output-paths: ("path": "../resources");
 
 /* ======================== ETC ======================== */
@@ -1453,7 +1455,7 @@ $relative-image-path-for-uis: $theme-material-resource-path;
 @import '../../../../../ext/modern/theme-material/sass/src/grid/plugin/filterbar/FilterBar';
 @import '../../../../../ext/modern/theme-material/sass/src/tab/Bar';
 
-/* including scss file adjacent to ..\..\..\..\..\app\Application.js */
+/* including scss file adjacent to ../../../../../app/Application.js */
 $default-resource-root: '' !default;
 $default-resource-path: 'images' !default;
 $current-package: false;
@@ -1461,7 +1463,7 @@ $current-resource-root: $default-resource-root;
 $relative-image-path-for-uis: $default-resource-path;
 @import '../../../../../app/Application';
 
-/* including scss file adjacent to ..\..\..\..\..\app\view\main\Home\HomeRecipeDataview.js */
+/* including scss file adjacent to ../../../../../app/view/main/Home/HomeRecipeDataview.js */
 $default-resource-root: '' !default;
 $default-resource-path: 'images' !default;
 $current-package: false;
@@ -1469,7 +1471,7 @@ $current-resource-root: $default-resource-root;
 $relative-image-path-for-uis: $default-resource-path;
 @import '../../../../../app/view/main/Home/HomeRecipeDataview';
 
-/* including scss file adjacent to ..\..\..\..\..\app\view\main\Home\RecipeView.js */
+/* including scss file adjacent to ../../../../../app/view/main/Home/RecipeView.js */
 $default-resource-root: '' !default;
 $default-resource-path: 'images' !default;
 $current-package: false;

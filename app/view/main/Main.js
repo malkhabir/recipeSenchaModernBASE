@@ -38,27 +38,7 @@ Ext.define('FrontEnd.view.main.Main', {
             iconCls: 'x-fa fa-user',
             layout: 'fit',
             items: [{
-                xtype: 'managementgrids',
-                items: [
-                    {
-                        title: 'Ingredients',
-                        layout: 'fit',
-                        items: [{
-                            xtype: 'gridingredient'
-                        }],
-                        cls: 'card'
-                    },
-                    {
-                        title: 'Recipes',
-                        html : 'A TabPanel can use different animations by setting <code>layout.animation.</code>',
-                        cls: 'card'
-                    },
-                    {
-                        title: 'Other',
-                        html : '<span class="action">User tapped Tab 3</span>',
-                        cls: 'card'
-                    }
-                ]
+                xtype: 'kitchenhub'
             }]
         },{
             title: 'User',

@@ -1,1 +1,1 @@
-cache_path = 'C:\Users\Khabir\source\repos\recipeSenchaModernBASE/build/.sass-cache'
+cache_path = '/Users/mahamadkanoute/Desktop/recipeSenchaModernBASE/build/.sass-cache'
