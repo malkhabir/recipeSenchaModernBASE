@@ -30,7 +30,7 @@ Ext.define('FrontEnd.view.main.GridIngredient', {
         type: 'ingredient',
         listeners: {
             load: function (store, records, success) {
-                console.log('Store Loaded:', records);
+                // console.log('Store Loaded:', records);
             }
         }
     },

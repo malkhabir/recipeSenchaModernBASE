@@ -10,7 +10,8 @@ Ext.application({
     requires: [
         // This will automatically load all classes in the RecipeSencha namespace
         // so that application classes do not need to require each other.
-        'FrontEnd.*'
+        'FrontEnd.*',
+
     ],
 
     // The name of the initial view to create.

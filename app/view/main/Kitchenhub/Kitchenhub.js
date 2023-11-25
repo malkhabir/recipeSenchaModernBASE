@@ -25,7 +25,10 @@ Ext.define('FrontEnd.view.main.Kitchenhub.Kitchenhub', {
                 },
                 {
                     title: 'Recipes',
-                    html : 'A TabPanel can use different animations by setting <code>layout.animation.</code>',
+                    layout: 'fit',
+                    items: [{
+                        xtype: 'gridrecipe'
+                    }],
                     cls: 'card'
                 },
                 {
