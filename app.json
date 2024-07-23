@@ -209,7 +209,11 @@
         {
             "path": "app.js",
             "bundle": true
+        },
+        {
+            "path": "utils/Utils.js"
         }
+
     ],
 
     /**

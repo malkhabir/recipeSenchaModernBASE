@@ -4,7 +4,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.ViewModel.CreateRecipeFormViewM
 
     data: {
         maxSteps: 1,
-        activeItemIndex: 0,
+        index: 0,
         step: ''
     },
 

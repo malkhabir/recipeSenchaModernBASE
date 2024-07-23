@@ -36,8 +36,8 @@ Ext.define('FrontEnd.view.main.Recipes.GridRecipes', {
     },
     
     columns: [
-        { text: 'Name', dataIndex: 'name', flex: 1 },
-        { text: 'Time', dataIndex: 'totalTime', flex: 1 },
+        { text: 'Name', dataIndex: 'recipeName', flex: 1 },
+        { text: 'Time', dataIndex: 'preparationTime', flex: 1 },
         { text: 'Id', dataIndex: 'recipeId', flex: 1, hidden: true },
         { text: 'Calories', dataIndex: 'calories', flex: 1,},
         { text: 'ImageName', dataIndex: 'imagePath', flex: 1, hidden: 'true'}

@@ -5,5 +5,6 @@ Ext.define('FrontEnd.view.FormWindow', {
     height: 250,
     layout: 'fit',
     modal: true,
+    closable: true
     
 });

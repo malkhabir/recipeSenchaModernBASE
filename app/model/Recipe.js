@@ -3,21 +3,20 @@ Ext.define('FrontEnd.model.Recipe', {
     extend: 'Ext.data.Model',
     
     fields: [
+        {name: 'recipeId', type: 'string', persist: false, unique: true, identifier: 'sequential' },
         {name: 'title', type: 'string' }, 
         {name: 'description', type: 'string'}, 
-        {name: 'preparationTime', type: 'int', sortType: 'asInt'}, 
-        {name: 'author', type: 'string'},
-        {name: 'type', type: 'string'},
-        {name: 'recipeId', type: 'string', persist: false, unique: true, identifier: 'sequential' },
-        {name: 'recipesteps', type: 'int'},
-        {name: 'instructions', type: 'string'},
-        {name: 'imagePath', type: 'string'},
-        {name: 'calories', type: 'number'}
+        {name: 'preparationTime', type: 'int', sortType: 'asInt'},      
+        {name: 'calories', type: 'number'},
+        {name: 'picture', type: 'string'},
+
     ],
 
     proxy: {
         type: 'ajax',
-        url: 'https://malkhabirapi.azurewebsites.net/api/recipe',
+        // url: 'https://malkhabirapi.azurewebsites.net/api/recipe',
+        url: 'https:/localhost:7270/api/recipe',
+
         reader: {
             type: 'json'
         },

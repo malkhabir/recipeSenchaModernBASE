@@ -3,7 +3,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
     xtype: 'createrecipeform',
     controller: 'recipeformcontroller',
     bodyPadding: 10,
-    url: 'https://localhost:7270/api/ingredient/',
+    url: 'https://localhost:7270/api/recipe/create',
     id: 'createrecipeform',
     
     viewModel: {
@@ -20,51 +20,18 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
     scrollable: false,
 
     bind: {
-        activeItemIndex: '{index}',
-        maxSteps: '{maxSteps}'  // Bind the maxSteps from the view model
+        // Bind the activeItem's index of the child element of this
+        // form panel to the index prop of the viewmodel. Then the index prop, 
+        // which is the active item index, is used to disable or enable components with the bind: {} config.
+        activeItemIndex: '{index}', 
+
+        // Bind the maxSteps from the view model
+        maxSteps: '{maxSteps}'  
     },
+
+    // This object holds a map of config properties that will update their binding as they are modified
     twoWayBindable: ['activeItemIndex', 'maxSteps'],
-
-    layout: {
-        type: 'card',
-        animation: {
-            type: 'slide'
-        }
-    },
-
-    bbar: {
-        reference: 'buttonToolbar',
-        items: [{
-            text: 'Back',
-            handler: 'onBack',
-            bind: {
-                disabled: '{index === 0}'
-            }
-        }, {
-            text: 'Next',
-            handler: 'onNext',
-            bind: {
-                hidden: '{index === maxSteps}',  // Check if the current index is the last step
-            }
-        }, {
-            text: 'Submit',
-            handler: 'onSubmit',
-            hidden: true,
-            bind: {
-                hidden: '{index < maxSteps}'  // Check if the current index is not the last step
-            }
-        }]
-    },
-
-    tbar: [{
-        xtype: 'component',
-        flex: 1,
-        bind: '{step}'
-    }, {
-        text: 'Reset',
-        handler: 'onReset'
-    }],
-
+    
     defaults: {
         scrollable: Ext.is.Phone
     },
@@ -76,32 +43,55 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
             xtype: 'textfield'
         },
         
-        items: [{
-            xtype: 'filefield',
-            label: 'Click here to upload a picture of the meal',
-            name: 'pictureUpload',
-            buttonOnly: true,
+        items: 
+        [{
+            xtype: 'textfield',
+            name: 'recipeId',
+            allowBlank: false,
+            hidden: true
+        },{
+            xtype: 'image',
+            id: 'recipeImage',
+            reference: 'recipeImage',
+            width: 200,
+            height: 200,
+            src: 'picture',
             listeners: {
-                change: function(fileField, value, eOpts) {
-                    // Handle file upload logic here if needed
-    
-                    // Assuming you have an Ext.Img component with itemId 'imagePreview'
-                    var imagePreview = fileField.up('container').down('image[itemId=imagePreview]');
-                    
-                    // Display the uploaded image in the preview
-                    if (imagePreview) {
-                        var file = fileField.fileInputEl.dom.files[0];
-                        if (file) {
-                            var reader = new FileReader();
-                            reader.onload = function (e) {
-                                imagePreview.setSrc(e.target.result);
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    }
+                tap: function(field, eopts) {
+                    debugger
+                    Ext.getCmp('createrecipeform').query('[name=recipeImage]')[0].getFileButton().buttonElement.dom.click()
+
                 }
             }
-        }, {
+        },{
+            xtype: 'filefield',
+            name: 'recipeImage',
+            accept: 'image',
+            hidden: true,
+            iconCls: 'x-fas fa-pen',
+            text: '',
+            listeners: {
+                change: function(field, newValue, oldValue, eOpts) {
+                    // Handle file selection logic here
+                    debugger
+                    var imageData
+                    var file = field.getFiles()[0];
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        imageData = e.target.result;
+                        // Update the image source with the new data
+                        // Assuming your image component has an itemId of 'image'
+                        // Ext.getCmp('createrecipeform').query('[reference=instruction0.picture]')[0]
+                        Ext.getCmp('createrecipeform').query('[reference='+ field.config.name +']')[0].setSrc(imageData);
+                        Ext.getCmp('createrecipeform').query('[name=recipeImage]')[0].setData(imageData);
+                        // Ext.getCmp(imageReference).setSrc(imageData);
+                        // Ext.getCmp('fileFieldWin').close()
+                    };
+                    reader.readAsDataURL(file);
+
+                }            
+            }            
+        },{
             xtype: 'textfield',
             label: 'Recipe Name',
             name: 'recipeName',
@@ -114,10 +104,14 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
             valueField: 'abbr',
             required: true,
             store: [
-                { abbr: 'AL', mealType: 'Lunch' },
-                { abbr: 'AK', mealType: 'Dinner' },
-                { abbr: 'AZ', mealType: 'Breakfast' }
-            ]
+                { abbr: '2', mealType: 'Lunch' },
+                { abbr: '3', mealType: 'Dinner' },
+                { abbr: '1', mealType: 'Breakfast' }
+            ],
+            name: 'mealType',
+            listeners: {
+
+            }
         }, {
             xtype: 'textareafield',
             label: 'Description',
@@ -126,38 +120,85 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
             required: true,
         }, {
             xtype: 'spinnerfield',
-            label: 'Number of steps',
+            label: 'Number of Steps',
             name: 'numberOfsteps',
             minValue: 1,
+            maxValue: 999,
             value: 1,
             listeners: {
-                change: function(spinner, newValue, oldValue, eOpts) {
+                change: function(spinner, newIndexValue, oldIndexValue, eOpts) {
                     var form = spinner.up('createrecipeform');
                     var currentItems = form.items.items;
                     // debugger
 
-                    if (newValue > oldValue) {
+                    if (newIndexValue > oldIndexValue) {
                         
-                        var newValue = spinner.getValue();
-                        var uniqueName = 'instruction' + newValue;
+                        var newIndexValue = spinner.getValue();
+                        var newInstructionName = 'instruction' + (newIndexValue - 1);
 
                         // Check if the instruction with the same name already exists
-                        if (!form.down('textareafield[name=' + uniqueName + ']')) {
+                        if (!form.down('textareafield[name=' + newInstructionName + ']')) {
                             form.insert(form.items.length - 1, {
                                 title: 'Instruction',
-                                items: [{
-                                    xtype: 'textareafield',
-                                    label: 'Enter ya instructions here..',
-                                    name: uniqueName,
-                                    required: true,
-                                    itemId: uniqueName
-                                }]
+                                items: 
+                                [
+                                    {
+                                        name: newInstructionName +'.profilePicture.instruction',
+                                        xtype: 'image',
+                                        width: 200,
+                                        height: 200,
+                                        src: 'https://placehold.co/600x400/EEE/31343C?font=lora&text=Tap%20to%20upload',
+                                        reference: newInstructionName +'.instructionPicture.instruction', //This points to the fileField.
+                                        listeners: {
+                                            tap: function(comp, eopts) {
+                                                debugger
+                                                Ext.getCmp('createrecipeform').query('[name='+comp.config.reference+']')[0].getFileButton().buttonElement.dom.click()
+                        
+                                            }
+                                        }
+                                    },
+                                    {
+                                        name: newInstructionName +'.instructionId.instruction',
+                                        xtype: 'textfield',
+                                        allowBlank: false,
+                                        hidden: true
+                                    }, {
+                                        name: newInstructionName +'.instructionPicture.instruction',
+                                        xtype: 'filefield',
+                                        label: 'Add an image to illustrate the instructions',
+                                        buttonOnly: true,
+                                        hidden: true,
+                                        listeners: {
+                                            change: function(field, newValue, oldValue, eOpts) {
+                                                // Handle file selection logic here
+                                                debugger
+                                                var imageData
+                                                var file = field.getFiles()[0];
+                                                if (file===undefined) { return }
+                                                var reader = new FileReader();
+                                                reader.onload = function(e) {
+                                                    imageData = e.target.result;
+                                                    Ext.getCmp('createrecipeform').query('[reference='+ field.config.name +']')[0].setSrc(imageData);
+                                                    // Ext.getCmp('fileFieldWin').close()
+                                                };
+                                                reader.readAsDataURL(file);
+                        
+                                            }       
+                                        }
+                                    }, {
+                                        name: newInstructionName +'.text.instruction',
+                                        xtype: 'textareafield',
+                                        label: 'Enter ya instructions here..',
+                                        required: true,
+                                        itemId: newInstructionName
+                                    }
+                                ]
                             });
                             form.updateLayout();
                             // Update the maxSteps in the view model
-                            form.getViewModel().set('maxSteps', newValue);
+                            form.getViewModel().set('maxSteps', newIndexValue);
                         }
-                    } else if (newValue < oldValue) {
+                    } else if (newIndexValue < oldIndexValue) {
                         // Query all containers
                         var allContainers = form.query('container');
                     
@@ -178,7 +219,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
                             form.updateLayout();
                     
                             // Update the maxSteps in the view model
-                            form.getViewModel().set('maxSteps', newValue);
+                            form.getViewModel().set('maxSteps', newIndexValue);
                         }
                     }
                 }
@@ -188,10 +229,102 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
         padding: 20,
         title: 'Instruction',
         flex: 1,
+        items: [
+            {
+                name: 'instruction0.profilePicture.instruction',
+                xtype: 'image',
+                width: 200,
+                height: 200,
+                src: 'picture',
+                reference: 'instruction0.instructionPicture.instruction',
+                listeners: {
+                    tap: function(comp, eopts) {
+                        debugger
+                        Ext.getCmp('createrecipeform').query('[name='+comp.config.reference+']')[0].getFileButton().buttonElement.dom.click()
+
+                    }
+                }
+            }, 
+            {
+                name: 'instruction0.instructionId.instruction',
+                xtype: 'textfield',
+                allowBlank: false,
+                hidden: true
+            }, 
+            {
+                name: 'instruction0.instructionPicture.instruction',
+                xtype: 'filefield',
+                label: 'Add an image to illustrate the instructions',
+                accept: 'image',
+                iconCls: 'x-fas fa-pen',
+                text: '',
+                hidden: true,
+                listeners: {
+                    change: function(field, newValue, oldValue, eOpts) {
+                        // Handle file selection logic here
+                        debugger
+                        var imageData
+                        var file = field.getFiles()[0];
+                        if (file===undefined) { return }
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            imageData = e.target.result;
+                            Ext.getCmp('createrecipeform').query('[reference='+ field.config.name +']')[0].setSrc(imageData);
+                            // Ext.getCmp('fileFieldWin').close()
+                        };
+                        reader.readAsDataURL(file);
+
+                    }       
+                }
+            }, 
+            {
+                name: 'instruction0.text.instruction',
+                xtype: 'textareafield',
+                label: 'Enter ya instructions here..',
+                required: true,
+            }
+        ]
+    }],
+
+    layout: {
+        type: 'card',
+        animation: {
+            type: 'slide'
+        }
+    },
+
+    tbar: [{
+        xtype: 'component',
+        flex: 1,
+        bind: '{step}'
+    }, {
+        text: 'Reset',
+        handler: 'onReset'
+    }],
+
+    bbar: {
+        reference: 'buttonToolbar',
         items: [{
-            xtype: 'textareafield',
-            label: 'Enter ya instructions here..',
-            required: true,
+            text: 'Back',
+            handler: 'onBack',
+            bind: {
+                disabled: '{index === 0}'
+            }
+        }, {
+            text: 'Next',
+            handler: 'onNext',
+            bind: {
+                hidden: '{index === maxSteps}',  // Check if the current index is the last step
+            }
+        }, {
+            text: 'Submit',
+            handler: 'onCreateRecipe',
+            hidden: true,
+            bind: {
+                hidden: '{index < maxSteps}'  // Check if the current index is not the last step
+            }
         }]
-    }]
+    }
+
+
 });
