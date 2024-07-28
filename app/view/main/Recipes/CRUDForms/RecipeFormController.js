@@ -176,293 +176,21 @@ Ext.define('FrontEnd.controller.RecipeFormController', {
     // },
 
     onCreateRecipe: function () {
-        debugger
-        var form = this.getView();
-        var formWindow = form.up();
-        var imageComponents = form.query('[xtype=image]')
+        var form = this
+        Ext.Msg.confirm('Create recipe', 
+            'Would you like to save your changes?', 
+            (buttonId) => {if(buttonId === 'yes'){submitRecipe(form)}else{return}} )
 
-        // var recipeId = Ext.getCmp('gridrecipesid').getSelection().data.recipeId
-        var APIUrl = 'https://localhost:7270/api/recipe/create/'
-        var changes = []
-
-        for (let fieldName in form.getFields()) {
-            field = form.getFields()[fieldName]
-            if (field.xtype === 'textfield' ||
-                field.xtype === 'textareafield' ||
-                field.xtype === 'combobox' ||
-                field.xtype === 'spinnerfield') {
-                // console.log(field.xtype)
-                // console.log(field.reference)
-                changes.push(
-                    {
-                        type: 'text',
-                        referenceName: field.getName(),
-                        value: field.getValue()
-                    }
-                )
-
-            }
-        }
-
-
-
-        imageComponents.forEach(comp => {
-            changes.push({ type: 'image', referenceName: comp.reference, value: comp.getSrc() })
-        })
-        debugger
-
-        // Initialize a recipe object
-        const recipe = {
-            RecipeId: '', // assuming this is generated later
-            RecipeName: '',
-            MealDescription: '',
-            PreparationTime: 0,
-            MealType: '',
-            Calories: 0.0,
-            Picture: '',
-            Ingredients: [],
-            Instructions: []
-        };
-
-        // Iterate over changes array
-        for (const change of changes) {
-            if (change.type === 'text') {
-                switch (change.referenceName) {
-                    case 'recipeId':
-                        recipe.RecipeId = change.value;
-                        break;
-                    case 'recipeName':
-                        recipe.RecipeName = change.value;
-                        break;
-                    case 'mealDescription':
-                        recipe.MealDescription = change.value;
-                        break;
-                    case 'mealType':
-                        recipe.MealType = change.value;
-                        break;
-                    // Assuming 'numberOfsteps' refers to the total number of steps/instructions
-                    case 'numberOfsteps':
-                        // Initialize Instructions array with the given number of steps
-                        const numberOfSteps = parseInt(change.value);
-                        recipe.Instructions = new Array(numberOfSteps).fill().map((_, index) => ({
-                            InstructionId: '',
-                            InstructionIndex: index, // Starting from 0
-                            InstructionValue: '',
-                            InstructionImage: ''
-                        }));                        break;
-                    default:
-                        // Check if the change reference is an instruction step
-                        if (change.referenceName.startsWith('instruction')) {
-                            const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
-                            const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
-                            if (instructionField === 'text') {
-                                // Assign instruction text to the corresponding step
-                                recipe.Instructions[instructionIndex].InstructionValue = change.value;
-                            } else if (instructionField === 'instructionId') {
-                                recipe.Instructions[instructionIndex].InstructionId = change.value;
-                                recipe.Instructions[instructionIndex].InstructionIndex = instructionIndex;
-
-                            } else if (instructionField === 'instruction') {
-                            
-                            } else if (instructionField === 'recipePicture') {
-                            
-                            }
-                        } 
-                        break;
-                }
-            } else if (change.type === 'image') {
-                // Assuming 'recipeImage' is the recipe picture and 'instructionX.instructionPicture.instruction' is the picture for instruction X
-                if (change.referenceName === 'recipeImage') {
-                    recipe.Picture = change.value;
-                } else if (change.referenceName.startsWith('instruction')) {
-                    const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
-                    const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
-                    if (instructionField === 'instructionPicture') {
-                        // Assign instruction picture to the corresponding step
-                        recipe.Instructions[instructionIndex].InstructionImage = change.value;
-                    }
-                }
-            }
-        }
-
-        // Output the constructed recipe object
-        console.log(recipe);
-
-
-        if (form.isValid()) {
-
-            Ext.Ajax.request({
-                url: APIUrl,
-                method: 'POST',
-                params: {
-                    payload: JSON.stringify(recipe)
-                },
-                success: function (response) {
-                    debugger
-                },
-                failure: function (response) {
-                    debugger
-
-                }
-            });
-
-            
-        } else {
-            
-        }
+        
 
     },
 
     onEditRecipe: function () {
-        debugger
-        var form = this.getView();
-        var formWindow = form.up();
-        var formIframeId = ''
-        var targetNode = document.body;
-        var APIUrl
-        var recipeId = Ext.getCmp('gridrecipesid').getSelection().data.recipeId
-        var invalidFields = [];
-
-        if (form.xtype !== 'createrecipeform') {
-            APIUrl = 'https://localhost:7270/api/recipe/update/' + recipeId
-        } else {
-            APIUrl = 'https://localhost:7270/api/recipe/create/'
-        }
-
-        var changes = []
-
-        for (let fieldName in form.getFields()) {
-            field = form.getFields()[fieldName]
-            if (field.xtype === 'textfield' ||
-                field.xtype === 'textareafield' ||
-                field.xtype === 'combobox' ||
-                field.xtype === 'spinnerfield') {
-
-                changes.push(
-                    {
-                        type: 'text',
-                        referenceName: field.getName(),
-                        value: field.getValue()
-                    }
-                )
-
-            }
-        }
-
-
-
-        var imageComponents = form.query('[xtype=image]')
-        imageComponents.forEach(comp => {
-            changes.push({ type: 'image', referenceName: comp.reference, value: comp.getSrc() })
-        })
-        debugger
-
-        // Initialize a recipe object
-        const recipe = {
-            RecipeId: '', // assuming this is generated later
-            RecipeName: '',
-            MealDescription: '',
-            PreparationTime: 0,
-            MealType: '',
-            Calories: 0.0,
-            Picture: '',
-            Ingredients: [],
-            Instructions: []
-        };
-
-        // Iterate over changes array
-        for (const change of changes) {
-            if (change.type === 'text') {
-                switch (change.referenceName) {
-                    case 'recipeId':
-                        recipe.RecipeId = change.value;
-                        break;
-                    case 'recipeName':
-                        recipe.RecipeName = change.value;
-                        break;
-                    case 'mealDescription':
-                        recipe.MealDescription = change.value;
-                        break;
-                    case 'mealType':
-                        recipe.MealType = change.value;
-                        break;
-                    // Assuming 'numberOfsteps' refers to the total number of steps/instructions
-                    case 'numberOfsteps':
-                        // Initialize Instructions array with the given number of steps
-                        const numberOfSteps = parseInt(change.value);
-                        recipe.Instructions = Array.from({ length: numberOfSteps }, (_, index) => ({
-                            InstructionId: null,
-                            InstructionValue: "",
-                            InstructionImage: "",
-                            InstructionIndex: index
-                        }));                        break;
-                    default:
-                        // Check if the change reference is an instruction step
-                        if (change.referenceName.startsWith('instruction')) {
-                            const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
-                            const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
-                            if (instructionField === 'text') {
-                                // Assign instruction text to the corresponding step
-                                recipe.Instructions[instructionIndex].InstructionValue = change.value;
-                            } else if (instructionField === 'instructionId') {
-                                recipe.Instructions[instructionIndex].InstructionId = change.value;
-                                recipe.Instructions[instructionIndex].InstructionIndex = instructionIndex;
-
-                            } else if (instructionField === 'instruction') {
-                            
-                            } else if (instructionField === 'recipePicture') {
-                            
-                            }
-                        } 
-                        break;
-                }
-            } else if (change.type === 'image') {
-                // Assuming 'recipeImage' is the recipe picture and 'instructionX.instructionPicture.instruction' is the picture for instruction X
-                if (change.referenceName === 'recipeImage') {
-                    recipe.Picture = change.value;
-                } else if (change.referenceName.startsWith('instruction')) {
-                    const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
-                    const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
-                    if (instructionField === 'instructionPicture') {
-                        // Assign instruction picture to the corresponding step
-                        recipe.Instructions[instructionIndex].InstructionImage = change.value;
-                    }
-                }
-            }
-        }
-
-        // Output the constructed recipe object
-        console.log(recipe);
-
-
-        if (form.isValid()) {
-
-            Ext.Ajax.request({
-                url: APIUrl,
-                method: 'POST',
-                params: {
-                    payload: JSON.stringify(recipe)
-                },
-                success: function (response) {
-                    debugger
-                },
-                failure: function (response) {
-                    debugger
-
-                }
-            });
-        } else {
-            Object.keys(form.getFields()).forEach(function (fieldName) {
-                var field = form.getFields()[fieldName]
-                if (!field.isValid()) {
-                    invalidFields.push(field.getName());
-                }
-            });
-
-
-            console.log('Invalid fields:', invalidFields);
-            Ext.Msg.alert('Invalid Data', 'Please correct review the following fields: ' + invalidFields)
-        }
+        var form = this
+        Ext.Msg.confirm('Edit recipe', 
+            'Would you like to save your changes?', 
+            (buttonId) => {if(buttonId === 'yes'){submitUpdateRecipe(form)}else{return}} )
+        
     },
 
     onImageUpdateClick: function () {
@@ -589,5 +317,324 @@ var getImagesAsync = function () {
 var CustomSubmitter = {
     APIUrl: '',
 
+}
+
+function submitRecipe (thisForm) {
+    var form = thisForm.getView();
+    var formWindow = form.up();
+    var imageComponents = form.query('[xtype=image]')
+
+    // var recipeId = Ext.getCmp('gridrecipesid').getSelection().data.recipeId
+    var APIUrl = 'https://localhost:7270/api/recipe/create/'
+    var changes = []
+
+    for (let fieldName in form.getFields()) {
+        field = form.getFields()[fieldName]
+        if (field.xtype === 'textfield' ||
+            field.xtype === 'textareafield' ||
+            field.xtype === 'combobox' ||
+            field.xtype === 'spinnerfield') {
+            // console.log(field.xtype)
+            // console.log(field.reference)
+            changes.push(
+                {
+                    type: 'text',
+                    referenceName: field.getName(),
+                    value: field.getValue()
+                }
+            )
+
+        }
+    }
+
+    imageComponents.forEach(comp => {
+        changes.push({ type: 'image', referenceName: comp.reference, value: comp.getSrc() })
+    })
+    debugger
+
+    // Initialize a recipe object
+    const recipe = {
+        RecipeId: '', // assuming this is generated later
+        RecipeName: '',
+        MealDescription: '',
+        PreparationTime: 0,
+        MealType: '',
+        Calories: 0.0,
+        Picture: '',
+        Ingredients: [],
+        Instructions: []
+    };
+
+    // Iterate over changes array
+    for (const change of changes) {
+        if (change.type === 'text') {
+            switch (change.referenceName) {
+                case 'recipeId':
+                    recipe.RecipeId = change.value;
+                    break;
+                case 'recipeName':
+                    recipe.RecipeName = change.value;
+                    break;
+                case 'mealDescription':
+                    recipe.MealDescription = change.value;
+                    break;
+                case 'mealType':
+                    recipe.MealType = change.value;
+                    break;
+                // Assuming 'numberOfsteps' refers to the total number of steps/instructions
+                case 'numberOfsteps':
+                    // Initialize Instructions array with the given number of steps
+                    const numberOfSteps = parseInt(change.value);
+                    recipe.Instructions = new Array(numberOfSteps).fill().map((_, index) => ({
+                        InstructionId: '',
+                        InstructionIndex: index, // Starting from 0
+                        InstructionValue: '',
+                        InstructionImage: ''
+                    }));                        break;
+                default:
+                    // Check if the change reference is an instruction step
+                    if (change.referenceName.startsWith('instruction')) {
+                        const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
+                        const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
+                        if (instructionField === 'text') {
+                            // Assign instruction text to the corresponding step
+                            recipe.Instructions[instructionIndex].InstructionValue = change.value;
+                        } else if (instructionField === 'instructionId') {
+                            recipe.Instructions[instructionIndex].InstructionId = change.value;
+                            recipe.Instructions[instructionIndex].InstructionIndex = instructionIndex;
+
+                        } else if (instructionField === 'instruction') {
+                        
+                        } else if (instructionField === 'recipePicture') {
+                        
+                        }
+                    } 
+                    break;
+            }
+        } else if (change.type === 'image') {
+            // Assuming 'recipeImage' is the recipe picture and 'instructionX.instructionPicture.instruction' is the picture for instruction X
+            if (change.referenceName === 'recipeImage') {
+                recipe.Picture = change.value;
+            } else if (change.referenceName.startsWith('instruction')) {
+                const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
+                const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
+                if (instructionField === 'instructionPicture') {
+                    // Assign instruction picture to the corresponding step
+                    recipe.Instructions[instructionIndex].InstructionImage = change.value;
+                }
+            }
+        }
+    }
+
+    // Output the constructed recipe object
+    console.log(recipe);
+
+
+    if (form.isValid()) {
+
+        Ext.Ajax.request({
+            url: APIUrl,
+            method: 'POST',
+            params: {
+                payload: JSON.stringify(recipe)
+            },
+            success: function (response) {
+                var alertDialog = Ext.toast({
+                    message: 'Saved',
+                    alignment: 'c-c',
+                    timeout: '2000',
+                    title: 'success',
+                    autoClose: true,
+                    closeAction: 'destroy',
+                    style: {
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
+                    },
+                    bodyStyle: 'background:#ffc; padding:10px;'
+                });
+
+                alertDialog.setHeight(60)
+                alertDialog.setWidth(60)
+
+                Ext.getCmp('gridrecipesid').getStore().reload();
+                formWindow.close();
+            },
+            failure: function (response) {
+                debugger
+
+            }
+        });
+
+        
+    } else {
+        
+    }
+}
+
+function submitUpdateRecipe(thisForm) {
+    debugger
+        var form = thisForm.getView();
+        var formWindow = form.up();
+        var APIUrl
+        var recipeId = Ext.getCmp('gridrecipesid').getSelection().data.recipeId
+        var invalidFields = [];
+
+        if (form.xtype !== 'createrecipeform') {
+            APIUrl = 'https://localhost:7270/api/recipe/update/' + recipeId
+        } else {
+            APIUrl = 'https://localhost:7270/api/recipe/create/'
+        }
+
+        var changes = []
+
+        for (let fieldName in form.getFields()) {
+            field = form.getFields()[fieldName]
+            if (field.xtype === 'textfield' ||
+                field.xtype === 'textareafield' ||
+                field.xtype === 'combobox' ||
+                field.xtype === 'spinnerfield') {
+
+                changes.push(
+                    {
+                        type: 'text',
+                        referenceName: field.getName(),
+                        value: field.getValue()
+                    }
+                )
+
+            }
+        }
+
+
+
+        var imageComponents = form.query('[xtype=image]')
+        imageComponents.forEach(comp => {
+            changes.push({ type: 'image', referenceName: comp.reference, value: comp.getSrc() })
+        })
+        debugger
+
+        // Initialize a recipe object
+        const recipe = {
+            RecipeId: '', // assuming this is generated later
+            RecipeName: '',
+            MealDescription: '',
+            PreparationTime: 0,
+            MealType: '',
+            Calories: 0.0,
+            Picture: '',
+            Ingredients: [],
+            Instructions: []
+        };
+
+        // Iterate over changes array
+        for (const change of changes) {
+            if (change.type === 'text') {
+                switch (change.referenceName) {
+                    case 'recipeId':
+                        recipe.RecipeId = change.value;
+                        break;
+                    case 'recipeName':
+                        recipe.RecipeName = change.value;
+                        break;
+                    case 'mealDescription':
+                        recipe.MealDescription = change.value;
+                        break;
+                    case 'mealType':
+                        recipe.MealType = change.value;
+                        break;
+                    // Assuming 'numberOfsteps' refers to the total number of steps/instructions
+                    case 'numberOfsteps':
+                        // Initialize Instructions array with the given number of steps
+                        const numberOfSteps = parseInt(change.value);
+                        recipe.Instructions = Array.from({ length: numberOfSteps }, (_, index) => ({
+                            InstructionId: null,
+                            InstructionValue: "",
+                            InstructionImage: "",
+                            InstructionIndex: index
+                        }));                        break;
+                    default:
+                        // Check if the change reference is an instruction step
+                        if (change.referenceName.startsWith('instruction')) {
+                            const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
+                            const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
+                            if (instructionField === 'text') {
+                                // Assign instruction text to the corresponding step
+                                recipe.Instructions[instructionIndex].InstructionValue = change.value;
+                            } else if (instructionField === 'instructionId') {
+                                recipe.Instructions[instructionIndex].InstructionId = change.value;
+                                recipe.Instructions[instructionIndex].InstructionIndex = instructionIndex;
+
+                            } else if (instructionField === 'instruction') {
+                            
+                            } else if (instructionField === 'recipePicture') {
+                            
+                            }
+                        } 
+                        break;
+                }
+            } else if (change.type === 'image') {
+                // Assuming 'recipeImage' is the recipe picture and 'instructionX.instructionPicture.instruction' is the picture for instruction X
+                if (change.referenceName === 'recipeImage') {
+                    recipe.Picture = change.value;
+                } else if (change.referenceName.startsWith('instruction')) {
+                    const instructionIndex = parseInt(change.referenceName.match(/\d+/)[0]);
+                    const instructionField = change.referenceName.split('.')[1]; // Get the last part after the last '.'
+                    if (instructionField === 'instructionPicture') {
+                        // Assign instruction picture to the corresponding step
+                        recipe.Instructions[instructionIndex].InstructionImage = change.value;
+                    }
+                }
+            }
+        }
+
+        // Output the constructed recipe object
+        console.log(recipe);
+
+
+        if (form.isValid()) {
+
+            Ext.Ajax.request({
+                url: APIUrl,
+                method: 'POST',
+                params: {
+                    payload: JSON.stringify(recipe)
+                },
+                success: function (response) {
+                    var alertDialog = Ext.toast({
+                        message: 'Saved',
+                        alignment: 'c-c',
+                        timeout: '2000',
+                        title: 'success',
+                        autoClose: true,
+                        closeAction: 'destroy',
+                        style: {
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
+                        },
+                        bodyStyle: 'background:#ffc; padding:10px;'
+                    });
+
+                    alertDialog.setHeight(60)
+                    alertDialog.setWidth(60)
+
+                    Ext.getCmp('gridrecipesid').getStore().reload();
+                    formWindow.close();
+                },
+                failure: function (response) {
+                    debugger
+                    Ext.Msg.alert('Failure', response)
+
+                }
+            });
+        } else {
+            Object.keys(form.getFields()).forEach(function (fieldName) {
+                var field = form.getFields()[fieldName]
+                if (!field.isValid()) {
+                    invalidFields.push(field.getName());
+                }
+            });
+
+
+            console.log('Invalid fields:', invalidFields);
+            Ext.Msg.alert('Invalid Data', 'Please correct review the following fields: ' + invalidFields)
+        }
 }
 

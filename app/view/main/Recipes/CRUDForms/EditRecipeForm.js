@@ -7,7 +7,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
 
     isEditForm: true,
     id: 'editrecipeform',
-    
+
     viewModel: {
         type: 'createrecipeformviewmodel'
     },
@@ -24,45 +24,49 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
         var instructions = data.instructions
 
         // Setup cards
-        this.setupCards(instructions.length - 1)
+        this.setupCards(instructions.length)
 
-        debugger
-        instructions.forEach(instruction => {
-            var instructionIndexName = 'instruction' + instruction['instructionIndex']
+        // Function to flatten instructions and add to root
+        function flattenInstructions(obj) {
+            const newObj = { ...obj };
+            newObj.instructions.forEach((instruction, index) => {
+                for (const key in instruction) {
+                    let newKey;
+                    if (key.includes("text.instruction")) {
+                        newKey = `instruction${index}.text.instruction`;
+                    } else if (key.includes("instructionPicture")) {
+                        newKey = `instruction${index}.instructionPicture.instruction`;
+                    } else if (key.includes("instructionId.instruction")) {
+                        newKey = `instruction${index}.instructionId.instruction`;
+                    }
+                    newObj[newKey] = instruction[key];
+                }
+            });
+            delete newObj.instructions;
+            return newObj;
+        }
 
-            // Create reference names
-            // These will make setValues work
-            // TODO: change setValues ?
-            var instructionTextKey = instructionIndexName + '.text.instruction'
-            var instructionIndexPictureName = instructionIndexName + '.instructionPicture'
-            var instructionId = instructionIndexName + '.instructionId.instruction'
-            
-            // Set references in data
-            data[instructionTextKey] = instruction['instructionValue'];
-            data[instructionIndexPictureName] = instruction['instructionImage'];
-            data[instructionId] = instruction['instructionId'];
-        });
+
+        const flattenedRecipe = flattenInstructions(data);
+        flattenedRecipe.numberOfsteps = instructions.length
+
+        this.setValues(flattenedRecipe);
 
 
-        // data.numberOfsteps = instructions.length
-
-        this.setValues(data);
-
-        
         // Update the image source in the edit ingredient form
         var imageComponent = this.down('image');
         if (imageComponent) {
-            imageComponent.setSrc(imageUrl);
+            imageComponent.setSrc(flattenedRecipe['picture']);
         }
 
         var imageComponents = this.query('[xtype=image]');
         imageComponents.forEach(comp => {
             if (comp.getReference() === 'recipeImage') {
-                comp.setSrc(data['picture'])
+                comp.setSrc(flattenedRecipe['picture'])
 
-            } 
+            }
             else {
-                comp.setSrc(data[comp.getReference().split('.')[0] + '.' + comp.getReference().split('.')[1]])
+                comp.setSrc(flattenedRecipe[comp.getReference().split('.')[0] + '.' + comp.getReference().split('.')[1]  + '.instruction'])
             }
 
         });
@@ -73,33 +77,33 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
     bodyPadding: 0,
     defaultType: 'container',
 
-    scrollable: false,
+    scrollable: true,
 
     bind: {
         // Bind the activeItem's index of the child element of this
-        // form panel to the index prop of the viewmodel. Then the index prop, 
+        // form panel to the index prop of the viewmodel. Then the index prop,
         // which is the active item index, is used to disable or enable components with the bind: {} config.
-        activeItemIndex: '{index}', 
+        activeItemIndex: '{index}',
 
         // Bind the maxSteps from the view model
-        maxSteps: '{maxSteps}'  
+        maxSteps: '{maxSteps}'
     },
 
     // This object holds a map of config properties that will update their binding as they are modified
     twoWayBindable: ['activeItemIndex', 'maxSteps'],
-    defaults: {
-        scrollable: Ext.is.Phone
-    },
+    // defaults: {
+    //     scrollable: Ext.is.Phone
+    // },
 
-    items: 
+    items:
     [{
         padding: 20,
         title: 'Information',
         defaults: {
             xtype: 'textfield'
         },
-        
-        items: 
+
+        items:
         [{
             xtype: 'textfield',
             name: 'recipeId',
@@ -145,8 +149,8 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
                     };
                     reader.readAsDataURL(file);
 
-                }            
-            }            
+                }
+            }
         },{
             xtype: 'textfield',
             label: 'Recipe Name',
@@ -173,7 +177,9 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
             label: 'Description',
             name: 'mealDescription',
             maxRows: 2,
+            height: '30%',
             required: true,
+            scrollable: true
         }, {
             xtype: 'spinnerfield',
             label: 'Number of Steps',
@@ -184,17 +190,19 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
             listeners: {
                 change: function(spinner, newIndexValue, oldIndexValue, eOpts) {
                     var form = spinner.up('editrecipeform');
+                    var actualIndexValue = oldIndexValue;
 
+                    if (actualIndexValue === newIndexValue){return}
                     if (newIndexValue > oldIndexValue) {
-                        
-                        var newIndexValue = spinner.getValue();
+
+                        // var newIndexValue = spinner.getValue();
                         var newInstructionName = 'instruction' + (newIndexValue - 1);
 
                         // Check if the instruction with the same name already exists
-                        if (!form.down('textareafield[name=' + newInstructionName + ']')) {
+                        if (!form.down('textareafield[name=' + newInstructionName + '.text.instruction' + ']')) {
                             form.insert(form.items.length - 1, {
                                 title: 'Instruction',
-                                items: 
+                                items:
                                 [
                                     {
                                         name: newInstructionName +'.instructionPicture.instruction',
@@ -216,10 +224,10 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
                                                     // Ext.getCmp('fileFieldWin').close()
                                                 };
                                                 reader.readAsDataURL(file);
-                        
-                                            }       
+
+                                            }
                                         }
-                                    }, 
+                                    },
                                     {
                                         name: newInstructionName +'.profilePicture.instruction',
                                         xtype: 'image',
@@ -231,7 +239,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
                                             tap: function(comp, eopts) {
                                                 debugger
                                                 Ext.getCmp('editrecipeform').query('[name='+comp.config.reference+']')[0].getFileButton().buttonElement.dom.click()
-                        
+
                                             }
                                         }
                                     },
@@ -240,7 +248,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
                                         xtype: 'textfield',
                                         allowBlank: false,
                                         hidden: true
-                                    }, 
+                                    },
                                     {
                                         name: newInstructionName +'.text.instruction',
                                         xtype: 'textareafield',
@@ -257,23 +265,23 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
                     } else if (newIndexValue < oldIndexValue) {
                         // Query all containers
                         var allContainers = form.query('container');
-                    
+
                         // Find the last added instruction container
                         var lastInstructionContainer = null;
                         for (var i = allContainers.length - 1; i >= 0; i--) {
                             var container = allContainers[i];
-                            var textareaField = container.down('textareafield[label=Enter ya instructions here..]');
+                            var textareaField = container.down('textareafield[name=' + newInstructionName + '.text.instruction' + ']');
                             if (textareaField) {
                                 lastInstructionContainer = container;
                                 break;
                             }
                         }
-                    
+
                         // Remove the last added instruction container only if there is more than one
                         if (lastInstructionContainer && allContainers.length > 1) {
                             form.remove(lastInstructionContainer);
                             form.updateLayout();
-                    
+
                             // Update the maxSteps in the view model
                             form.getViewModel().set('maxSteps', newIndexValue);
                         }
@@ -281,69 +289,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
                 }
             }
         }]
-    }, 
-    // {
-    //     padding: 20,
-    //     title: 'Instruction',
-    //     flex: 1,
-    //     items: 
-    //     [
-    //         {
-    //             name: 'instruction0.instructionPicture',
-    //             xtype: 'image',
-    //             width: 200,
-    //             height: 200,
-    //             // src: 'picture',
-    //             reference: 'instruction0.instructionPicture',
-    //             listeners: {
-    //                 tap: function(comp, eopts) {
-    //                     debugger
-    //                     Ext.getCmp('editrecipeform').query('[name='+comp.config.reference+'][xtype=filefield]')[0].getFileButton().buttonElement.dom.click()
-
-    //                 }
-    //             }
-    //         },
-    //         {
-    //             name: 'instruction0.instructionPicture',
-    //             xtype: 'filefield',
-    //             label: 'Add an image to illustrate the instructions',
-    //             accept: 'image',
-    //             iconCls: 'x-fas fa-pen',
-    //             text: '',
-    //             hidden: true,
-    //             listeners: {
-    //                 change: function(field, newValue, oldValue, eOpts) {
-    //                     // Handle file selection logic here
-    //                     debugger
-    //                     var imageData
-    //                     var file = field.getFiles()[0];
-    //                     if (file===undefined) { return }
-    //                     var reader = new FileReader();
-    //                     reader.onload = function(e) {
-    //                         imageData = e.target.result;
-    //                         Ext.getCmp('editrecipeform').query('[reference='+ field.config.name +']')[0].setSrc(imageData);
-    //                         // Ext.getCmp('fileFieldWin').close()
-    //                     };
-    //                     reader.readAsDataURL(file);
-
-    //                 }       
-    //             }
-    //         }, 
-    //         {
-    //             name: 'instruction0.instructionId.instruction',
-    //             xtype: 'textfield',
-    //             allowBlank: false,
-    //             hidden: true
-    //         }, 
-    //         {
-    //             name: 'instruction0.text.instruction',
-    //             xtype: 'textareafield',
-    //             label: 'Enter ya instructions here..',
-    //             required: true,
-    //         }
-    //     ]
-    // }
-    ],
+    }],
 
     layout: {
         type: 'card',
@@ -398,7 +344,7 @@ function setCards(newIndexValue) {
         if (!this.down('textareafield[name=' + newInstructionName + ']')) {
             this.insert(this.items.length - 1, {
                 title: 'Instruction',
-                items: 
+                items:
                 [
                     {
                         name: newInstructionName +'.instructionPicture.instruction',
@@ -409,7 +355,7 @@ function setCards(newIndexValue) {
                         listeners: {
                             change: function(field, newValue, oldValue, eOpts) {
                                 // Handle file selection logic here
-                                debugger
+
                                 var imageData
                                 var file = field.getFiles()[0];
                                 if (file===undefined) { return }
@@ -420,10 +366,10 @@ function setCards(newIndexValue) {
                                     // Ext.getCmp('fileFieldWin').close()
                                 };
                                 reader.readAsDataURL(file);
-        
-                            }       
+
+                            }
                         }
-                    }, 
+                    },
                     {
                         name: newInstructionName +'.profilePicture.instruction',
                         xtype: 'image',
@@ -435,7 +381,7 @@ function setCards(newIndexValue) {
                             tap: function(comp, eopts) {
                                 debugger
                                 Ext.getCmp('editrecipeform').query('[name='+comp.config.reference+']')[0].getFileButton().buttonElement.dom.click()
-        
+
                             }
                         }
                     },
@@ -444,12 +390,14 @@ function setCards(newIndexValue) {
                         xtype: 'textfield',
                         allowBlank: false,
                         hidden: true
-                    }, 
+                    },
                     {
                         name: newInstructionName +'.text.instruction',
                         xtype: 'textareafield',
-                        label: 'Enter ya instructions here..',
+                        label: 'Instruction',
+                        height: '60%',
                         required: true,
+                        scrollable: true
                         // itemId: newInstructionName
                     }
                 ]

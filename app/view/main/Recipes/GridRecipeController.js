@@ -11,9 +11,8 @@ Ext.define('FrontEnd.view.main.GridRecipeController', {
             form = this.getView().add({
                 xtype: 'formwindow',
                 title: 'Add Recipe',
-                height: 600,
-                width: 500,
                 layout: 'fit',
+                scrollable: true,
                 items: [{
                     xtype: 'createrecipeform',
                 }]
@@ -29,6 +28,8 @@ Ext.define('FrontEnd.view.main.GridRecipeController', {
     EditRecipe: function(sender){
         //Sets the edit recipe form with some data
         var record = this.getView().getSelection();
+        record.data.instructions = typeof(record.data.instructions) === 'string' ? JSON.parse(record.data.instructions):record.data.instructions
+
         debugger;
         if(record !== null){
             // Create the image component with the dynamically generated image URL
@@ -36,7 +37,9 @@ Ext.define('FrontEnd.view.main.GridRecipeController', {
             var formWindow = this.getView().add({
                 xtype: 'formwindow',
                 title: 'Edit Recipe',
-                height: 700,
+                // height: 700,
+                layout: 'fit',
+                scrollable: true,
                 items: [{
                     xtype: 'editrecipeform'
                 }],
@@ -55,46 +58,52 @@ Ext.define('FrontEnd.view.main.GridRecipeController', {
     },
 
     DeleteRecipe: function(sender, record){
-        debugger
-        var recordArray = this.getView().getSelections()
-        var record = this.getView().getSelection();
-        for (let index = 0; index < recordArray.length; index++) {
-            deleteNextRecord(index)
-        } 
-
-        function deleteNextRecord(index) {
-            Ext.Viewport.setMasked({
-                xtype: 'loadmask',
-                message: 'Please wait...'
-            });
-
-            debugger
-            Ext.Ajax.request({
-                url: 'https://localhost:7270/api/recipe/' + recordArray[index].data.recipeId,
-                method: 'DELETE',
-                success: function(response) {
-                    Ext.getCmp('gridingredientid').getStore().reload();
-                    var result = Ext.decode(response.responseText);
-                    if (result.success === false) {
-                        Ext.Msg.alert('Error', result.msg);
-                    } else {
-                        Ext.Msg.alert('Success', result.msg);
-                        
-                    }
-                    Ext.Viewport.setMasked(false);
-                    var grid = Ext.getCmp('gridrecipesid');
-                    grid.getStore().load();
-                },
-                failure: function(response) {
-                    var result = Ext.decode(response.responseText);
-                    Ext.Msg.alert('Error', result.msg);
-                    Ext.Viewport.setMasked(false);
-                    
-                }
-            });
-        }
+        var form = this
+        Ext.Msg.confirm('Delete recipe', 
+            'Would you like to delete this recipe?', 
+            (buttonId) => {if(buttonId === 'yes'){deleteRecipe(form)}else{return}} )
         
     },
 
     
 });
+
+function deleteRecipe(thisForm) {
+    var recordArray = thisForm.getView().getSelections()
+    var record = thisForm.getView().getSelection();
+    for (let index = 0; index < recordArray.length; index++) {
+        deleteNextRecord(index)
+    } 
+
+    function deleteNextRecord(index) {
+        Ext.Viewport.setMasked({
+            xtype: 'loadmask',
+            message: 'Please wait...'
+        });
+
+        debugger
+        Ext.Ajax.request({
+            url: 'https://localhost:7270/api/recipe/' + recordArray[index].data.recipeId,
+            method: 'DELETE',
+            success: function(response) {
+                Ext.getCmp('gridingredientid').getStore().reload();
+                var result = Ext.decode(response.responseText);
+                if (result.success === false) {
+                    Ext.Msg.alert('Error', result.msg);
+                } else {
+                    Ext.Msg.alert('Success', result.msg);
+                    
+                }
+                Ext.Viewport.setMasked(false);
+                var grid = Ext.getCmp('gridrecipesid');
+                grid.getStore().load();
+            },
+            failure: function(response) {
+                var result = Ext.decode(response.responseText);
+                Ext.Msg.alert('Error', result.msg);
+                Ext.Viewport.setMasked(false);
+                
+            }
+        });
+    }
+}
