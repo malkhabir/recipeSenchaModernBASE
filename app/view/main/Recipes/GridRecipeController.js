@@ -30,7 +30,6 @@ Ext.define('FrontEnd.view.main.GridRecipeController', {
         var record = this.getView().getSelection();
         record.data.instructions = typeof(record.data.instructions) === 'string' ? JSON.parse(record.data.instructions):record.data.instructions
 
-        debugger;
         if(record !== null){
             // Create the image component with the dynamically generated image URL
             var imageUrl = record.get('picture');
@@ -38,7 +37,10 @@ Ext.define('FrontEnd.view.main.GridRecipeController', {
                 xtype: 'formwindow',
                 title: 'Edit Recipe',
                 // height: 700,
-                layout: 'fit',
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch',
+                },
                 scrollable: true,
                 items: [{
                     xtype: 'editrecipeform'

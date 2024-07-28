@@ -8,6 +8,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
     isEditForm: true,
     id: 'editrecipeform',
 
+    flex: 1,
     viewModel: {
         type: 'createrecipeformviewmodel'
     },
@@ -113,8 +114,8 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
             xtype: 'image',
             id: 'recipeImage',
             reference: 'recipeImage',
-            width: 200,
-            height: 200,
+            width: 150,
+            height: 135,
             src: 'picture',
             listeners: {
                 tap: function(field, eopts) {
@@ -177,7 +178,7 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
             label: 'Description',
             name: 'mealDescription',
             maxRows: 2,
-            height: '30%',
+            height: '20%',
             required: true,
             scrollable: true
         }, {
@@ -189,15 +190,17 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
             value: 1,
             listeners: {
                 change: function(spinner, newIndexValue, oldIndexValue, eOpts) {
+                    debugger
                     var form = spinner.up('editrecipeform');
                     var actualIndexValue = oldIndexValue;
+                    var newInstructionName
+
 
                     if (actualIndexValue === newIndexValue){return}
                     if (newIndexValue > oldIndexValue) {
 
                         // var newIndexValue = spinner.getValue();
-                        var newInstructionName = 'instruction' + (newIndexValue - 1);
-
+                        newInstructionName = 'instruction' + (newIndexValue - 1);
                         // Check if the instruction with the same name already exists
                         if (!form.down('textareafield[name=' + newInstructionName + '.text.instruction' + ']')) {
                             form.insert(form.items.length - 1, {
@@ -262,7 +265,10 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
                             // Update the maxSteps in the view model
                             form.getViewModel().set('maxSteps', newIndexValue);
                         }
-                    } else if (newIndexValue < oldIndexValue) {
+                    } 
+                    else if (newIndexValue < oldIndexValue) {
+                        newInstructionName = 'instruction' + newIndexValue;
+                        
                         // Query all containers
                         var allContainers = form.query('container');
 
