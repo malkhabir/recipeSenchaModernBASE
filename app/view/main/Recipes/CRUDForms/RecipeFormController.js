@@ -326,7 +326,7 @@ function submitRecipe (thisForm) {
     var imageComponents = form.query('[xtype=image]')
 
     // var recipeId = Ext.getCmp('gridrecipesid').getSelection().data.recipeId
-    var APIUrl = 'https://backendsencharecipeapi.azure-api.net/api/recipe/create/'
+    var APIUrl = 'https://malkhabirapi.azurewebsites.net/api/recipe/create/'
     // var APIUrl = 'https://localhost:7270/api/recipe/create/'
     var changes = []
 
