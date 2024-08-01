@@ -3,7 +3,8 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.EditRecipeForm', {
     xtype: 'editrecipeform',
     controller: 'recipeformcontroller',
     bodyPadding: 10,
-    url: 'https://localhost:7270/api/recipe/update',
+    url: 'https://malkhabirapi.azurewebsites.net/api/recipe/update',
+    // url: 'https://localhost:7270/api/recipe/update',
 
     isEditForm: true,
     id: 'editrecipeform',

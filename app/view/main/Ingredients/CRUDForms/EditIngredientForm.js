@@ -4,7 +4,8 @@ Ext.define('FrontEnd.view.EditIngredientForm', {
     controller: 'ingredientformcontroller',
     bodyPadding: 10,
     defaultType: 'textfield',
-    url: 'https://localhost:7270/api/ingredient/',
+    url: 'https://malkhabirapi.azurewebsites.net/api/ingredient/',
+    // url: 'https://localhost:7270/api/ingredient/',
     id: 'editingredientform',
     
     items: [{

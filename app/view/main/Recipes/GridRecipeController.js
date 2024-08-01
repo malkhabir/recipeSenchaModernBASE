@@ -85,7 +85,8 @@ function deleteRecipe(thisForm) {
 
         debugger
         Ext.Ajax.request({
-            url: 'https://localhost:7270/api/recipe/' + recordArray[index].data.recipeId,
+            url: 'https://malkhabirapi.azurewebsites.net/api/recipe/' + recordArray[index].data.recipeId,
+            // url: 'https://localhost:7270/api/recipe/' + recordArray[index].data.recipeId,
             method: 'DELETE',
             success: function(response) {
                 Ext.getCmp('gridingredientid').getStore().reload();

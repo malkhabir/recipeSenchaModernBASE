@@ -1,4 +1,3 @@
-// Model: Recipe.js
 Ext.define('FrontEnd.model.Recipe', {
     extend: 'Ext.data.Model',
     
@@ -14,9 +13,7 @@ Ext.define('FrontEnd.model.Recipe', {
 
     proxy: {
         type: 'ajax',
-        // url: 'https://malkhabirapi.azurewebsites.net/api/recipe',
-        url: 'https:/localhost:7270/api/recipe',
-
+        url: 'https://malkhabirapi.azurewebsites.net/api/recipe',
         reader: {
             type: 'json'
         },

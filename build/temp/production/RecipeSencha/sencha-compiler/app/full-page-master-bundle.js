@@ -1,2 +1,2 @@
 // @tag full-page
-// @require /Users/mahamadkanoute/Desktop/recipeSenchaModernBASE/app.js
+// @require C:\Users\malkh\source\repos\malkhabir\recipeSenchaModernBASE\app.js

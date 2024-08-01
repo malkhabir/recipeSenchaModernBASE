@@ -248,7 +248,8 @@ var setImage = function (imageReference) {
 
 var getImagesAsync = function () {
     Ext.Ajax.request({
-        url: 'https://localhost:7270/api/ingredient/container/recipeas/',
+        url: Ext.getApplication() ?? '' .apiUrl ?? '' + 'ingredient/container/recipeas/',
+        // url: 'https://localhost:7270/api/ingredient/container/recipeas/',
         method: 'GET',
         success: function (response) {
             try {
@@ -325,7 +326,8 @@ function submitRecipe (thisForm) {
     var imageComponents = form.query('[xtype=image]')
 
     // var recipeId = Ext.getCmp('gridrecipesid').getSelection().data.recipeId
-    var APIUrl = 'https://localhost:7270/api/recipe/create/'
+    var APIUrl = 'https://backendsencharecipeapi.azure-api.net/api/recipe/create/'
+    // var APIUrl = 'https://localhost:7270/api/recipe/create/'
     var changes = []
 
     for (let fieldName in form.getFields()) {
@@ -479,9 +481,11 @@ function submitUpdateRecipe(thisForm) {
         var invalidFields = [];
 
         if (form.xtype !== 'createrecipeform') {
-            APIUrl = 'https://localhost:7270/api/recipe/update/' + recipeId
+            APIUrl = 'https://malkhabirapi.azurewebsites.net/api/recipe/update/' + recipeId
+            // APIUrl = 'https://localhost:7270/api/recipe/update/' + recipeId
         } else {
-            APIUrl = 'https://localhost:7270/api/recipe/create/'
+            APIUrl = 'https://malkhabirapi.azurewebsites.net/api/recipe/create/'
+            // APIUrl = 'https://localhost:7270/api/recipe/create/'
         }
 
         var changes = []

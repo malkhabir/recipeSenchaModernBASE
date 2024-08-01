@@ -62,7 +62,8 @@ Ext.define('FrontEnd.controller.IngredientFormController', {
         
         if (form.isValid()) {
             Ext.Ajax.request({
-                url: 'https://localhost:7270/api/ingredient/' + record.ingredientId,
+                url: 'https://malkhabirapi.azurewebsites.net/api/ingredient/' + record.ingredientId,
+                // url: 'https://localhost:7270/api/ingredient/' + record.ingredientId,
                 method: 'PUT',
                 jsonData: record,
                 success: function(response) {
@@ -131,7 +132,8 @@ var getLastArrayItem = function (array) {
 
 var getImageAsync = function(record) {
     Ext.Ajax.request({
-        url: 'https://localhost:7270/api/ingredient/container/recipeas/' + record.name,
+        url: 'https://malkhabirapi.azurewebsites.net/api/ingredient/container/recipeas/' + record.name,
+        // url: 'https://localhost:7270/api/ingredient/container/recipeas/' + record.name,
         method: 'GET',
         success: function (response) {
             try {
@@ -199,7 +201,8 @@ var getImageAsync = function(record) {
 
 var getImagesAsync = function() {
     Ext.Ajax.request({
-        url: 'https://localhost:7270/api/ingredient/container/recipeas/',
+        url: 'https://malkhabirapi.azurewebsites.net/api/ingredient/container/recipeas/',
+        // url: 'https://localhost:7270/api/ingredient/container/recipeas/',
         method: 'GET',
         success: function (response) {
             try {

@@ -3,7 +3,9 @@ Ext.define('FrontEnd.view.main.Recipes.CRUDForms.CreateRecipeForm', {
     xtype: 'createrecipeform',
     controller: 'recipeformcontroller',
     bodyPadding: 10,
-    url: 'https://localhost:7270/api/recipe/create',
+    url: 'https://malkhabirapi.azurewebsites.net/api/recipe/create',
+    // url: 'https://backendsencharecipeapi.azure-api.net/api/recipe/create',
+    // url: 'https://localhost:7270/api/recipe/create',
     id: 'createrecipeform',
     
     viewModel: {

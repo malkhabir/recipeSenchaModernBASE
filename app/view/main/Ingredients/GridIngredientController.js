@@ -69,7 +69,8 @@ Ext.define('FrontEnd.view.main.GridIngredientController', {
                 });
 
                 Ext.Ajax.request({
-                    url: 'https://localhost:7270/api/ingredient/' + record.data.ingredientId,
+                    url: 'https://malkhabirapi.azurewebsites.net/api/ingredient/' + record.data.ingredientId,
+                    // url: 'https://localhost:7270/api/ingredient/' + record.data.ingredientId,
                     method: 'DELETE',
                     success: function(response) {
                         
