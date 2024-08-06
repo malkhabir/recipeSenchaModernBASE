@@ -16,22 +16,25 @@ Ext.define('FrontEnd.controller.IngredientFormController', {
                 success: function(form, action) {
                     debugger
                     var result = action.msg;
+                    Ext.Msg.alert('Notification','Saved')
                     if(action.success === true){
-                        var alertDialog = Ext.toast({
-                            message: 'Saved',
-                            alignment: 'c-c',
-                            timeout: '2000',
-                            title: 'success',
-                            autoClose: true,
-                            closeAction: 'destroy',
-                            style: {
-                                backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
-                            },
-                            bodyStyle: 'background:#ffc; padding:10px;'
-                        });
+                        // var alertDialog = Ext.toast({
+                        //     message: 'Saved',
+                        //     alignment: 'c-c',
+                        //     timeout: '2000',
+                        //     title: 'success',
+                        //     autoClose: true,
+                        //     closeAction: 'destroy',
+                        //     style: {
+                        //         backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
+                        //     },
+                        //     bodyStyle: 'background:#ffc; padding:10px;'
+                        // });
 
-                        alertDialog.setHeight(60)
-                        alertDialog.setWidth(60)
+                        // alertDialog.setHeight(60)
+                        // alertDialog.setWidth(60)
+
+                        Ext.Msg.alert('Notification','Saved')
 
                         Ext.getCmp('gridingredientid').getStore().reload();
                         formWindow.close();
@@ -69,21 +72,7 @@ Ext.define('FrontEnd.controller.IngredientFormController', {
                 success: function(response) {
                     var result = Ext.decode(response.responseText);
                     if(result.success === true){
-                        var alertDialog = Ext.toast({
-                            message: 'Edited',
-                            alignment: 'c-c',
-                            timeout: '2000',
-                            title: 'success',
-                            autoClose: true,
-                            closeAction: 'destroy',
-                            style: {
-                                backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
-                            },
-                            bodyStyle: 'background:#ffc; padding:10px;'
-                        });
-
-                        alertDialog.setHeight(60)
-                        alertDialog.setWidth(60)
+                        Ext.Msg.alert('Notification','Saved')
 
                         Ext.getCmp('gridingredientid').getStore().reload();
                         formWindow.close();

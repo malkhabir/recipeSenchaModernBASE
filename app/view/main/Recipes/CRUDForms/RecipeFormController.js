@@ -17,21 +17,7 @@ Ext.define('FrontEnd.controller.RecipeFormController', {
                     debugger
                     var result = action.msg;
                     if (action.success === true) {
-                        var alertDialog = Ext.toast({
-                            message: 'Saved',
-                            alignment: 'c-c',
-                            timeout: '2000',
-                            title: 'success',
-                            autoClose: true,
-                            closeAction: 'destroy',
-                            style: {
-                                backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
-                            },
-                            bodyStyle: 'background:#ffc; padding:10px;'
-                        });
-
-                        alertDialog.setHeight(60)
-                        alertDialog.setWidth(60)
+                        Ext.Msg.alert('Notification','Saved')
 
                         Ext.getCmp('gridingredientid').getStore().reload();
                         formWindow.close();
@@ -53,74 +39,10 @@ Ext.define('FrontEnd.controller.RecipeFormController', {
         this.getView().up('window').close();
     },
 
-    // onUpdateClick: function() {
-    //     var form = this.getView();
-    //     var formWindow = form.up();
-    //     var record = form.getValues();
-    //     var selectedImagePath = form.query('image')[0].getSrc();
-    //     record.imagePath = getLastArrayItem(selectedImagePath.split('/'));      
-
-    //     if (form.isValid()) {
-    //         Ext.Ajax.request({
-    //             url: 'https://localhost:7270/api/ingredient/' + record.ingredientId,
-    //             method: 'PUT',
-    //             jsonData: record,
-    //             success: function(response) {
-    //                 var result = Ext.decode(response.responseText);
-    //                 if(result.success === true){
-    //                     var alertDialog = Ext.toast({
-    //                         message: 'Edited',
-    //                         alignment: 'c-c',
-    //                         timeout: '2000',
-    //                         title: 'success',
-    //                         autoClose: true,
-    //                         closeAction: 'destroy',
-    //                         style: {
-    //                             backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
-    //                         },
-    //                         bodyStyle: 'background:#ffc; padding:10px;'
-    //                     });
-
-    //                     alertDialog.setHeight(60)
-    //                     alertDialog.setWidth(60)
-
-    //                     Ext.getCmp('gridingredientid').getStore().reload();
-    //                     formWindow.close();
-    //                 } else {
-    //                     Ext.Msg.alert('Error', result.msg)
-    //                 }
-
-    //             },
-    //             failure: function(response) {
-    //                 var result = Ext.decode(response.responseText);
-    //                 Ext.Msg.alert('Error', result.title);
-    //             }
-    //         });
-    //     } else {
-    //         Ext.Msg.alert('Invalid Data', 'Please correct form errors.');
-    //     }
-    // },
-
     onImageTap: function (imageComponent) {
-        debugger;
-        // var record = this.getView().getValues();
-        // var formType = this.getView().getInitialConfig().xtype;
+
         var imageReference = imageComponent.reference;
         setImage(imageReference)
-
-
-        // switch (formType) {
-        //     case 'createingredientform':
-        //         setImage(imageReference)
-        //         break;
-        //     case 'editrecipeform':
-        //         setImage()
-        //         break;  
-        //     default:
-        //         // Code to handle other xtypes
-        //         break;
-        // }
-
 
     },
 
@@ -147,33 +69,6 @@ Ext.define('FrontEnd.controller.RecipeFormController', {
 
         // bbar.insert(1, indicator);
     },
-
-    // onExpandClick: function () {
-    //     debugger
-    //     var form = this.getView();
-    //     var rightContainer = form.items.getAt(1); // Access the second item (right container)
-    //     var isExpanded = rightContainer.getWidth() > 0; // Check if currently expanded
-
-    //     // Create an animation
-    //     var animation = Ext.create('Ext.util.Animate', {
-    //         target: rightContainer,
-    //         duration: 500,
-    //         easing: 'easeInOut',
-    //         from: {
-    //             width: isExpanded ? 300 : 0
-    //         },
-    //         to: {
-    //             width: isExpanded ? 0 : 300
-    //         },
-    //         callback: function () {
-    //             // Reset the width after the animation completes
-    //             rightContainer.setWidth(isExpanded ? 0 : 300);
-    //         }
-    //     });
-
-    //     // Run the animation
-    //     animation.run();
-    // },
 
     onCreateRecipe: function () {
         var form = this
@@ -441,24 +336,28 @@ function submitRecipe (thisForm) {
                 payload: JSON.stringify(recipe)
             },
             success: function (response) {
-                var alertDialog = Ext.toast({
-                    message: 'Saved',
-                    alignment: 'c-c',
-                    timeout: '2000',
-                    title: 'success',
-                    autoClose: true,
-                    closeAction: 'destroy',
-                    style: {
-                        backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
-                    },
-                    bodyStyle: 'background:#ffc; padding:10px;'
-                });
+                // var alertDialog = Ext.toast({
+                //     message: 'Saved',
+                //     alignment: 'c-c',
+                //     timeout: '2000',
+                //     title: 'success',
+                //     autoClose: true,
+                //     closeAction: 'destroy',
+                //     style: {
+                //         backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
+                //     },
+                //     bodyStyle: 'background:#ffc; padding:10px;'
+                // });
 
-                alertDialog.setHeight(60)
-                alertDialog.setWidth(60)
+                // alertDialog.setHeight(60)
+                // alertDialog.setWidth(60)
+
+                Ext.Msg.alert('Notification','Saved')
 
                 Ext.getCmp('gridrecipesid').getStore().reload();
                 formWindow.close();
+                Ext.Msg.alert('Notification','Saved')
+
             },
             failure: function (response) {
                 debugger
