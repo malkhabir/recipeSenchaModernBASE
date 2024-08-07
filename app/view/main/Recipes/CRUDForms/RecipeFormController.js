@@ -502,21 +502,22 @@ function submitUpdateRecipe(thisForm) {
                     payload: JSON.stringify(recipe)
                 },
                 success: function (response) {
-                    var alertDialog = Ext.toast({
-                        message: 'Saved',
-                        alignment: 'c-c',
-                        timeout: '2000',
-                        title: 'success',
-                        autoClose: true,
-                        closeAction: 'destroy',
-                        style: {
-                            backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
-                        },
-                        bodyStyle: 'background:#ffc; padding:10px;'
-                    });
+                    // var alertDialog = Ext.toast({
+                    //     message: 'Saved',
+                    //     alignment: 'c-c',
+                    //     timeout: '2000',
+                    //     title: 'success',
+                    //     autoClose: true,
+                    //     closeAction: 'destroy',
+                    //     style: {
+                    //         backgroundColor: 'rgba(75, 192, 192, 0.5)' // Set your desired RGBA color (with 0.5 alpha for transparency)
+                    //     },
+                    //     bodyStyle: 'background:#ffc; padding:10px;'
+                    // });
 
-                    alertDialog.setHeight(60)
-                    alertDialog.setWidth(60)
+                    // alertDialog.setHeight(60)
+                    // alertDialog.setWidth(60)
+                    Ext.Msg.alert('Notification','Saved')
 
                     Ext.getCmp('gridrecipesid').getStore().reload();
                     formWindow.close();
